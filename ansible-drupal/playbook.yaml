@@ -8,6 +8,7 @@
       update_cache: yes
     become: true
 
+# Gather EC2 facts
   - amazon.aws.ec2_metadata_facts:
 
 - hosts: db-server
