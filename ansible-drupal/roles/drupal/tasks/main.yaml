@@ -1,0 +1,113 @@
+---
+- name: Composer | Install Composer latest-stable
+  get_url:
+    url: https://getcomposer.org/download/latest-stable/composer.phar
+    dest: /usr/local/bin/composer.phar
+    mode: 0755
+
+- name: Composer | Symlink composer.phar
+  file:
+    src: composer.phar
+    dest: /usr/local/bin/composer
+    state: link
+
+- name: install git
+  package: name=git state=latest
+
+# - name: clone Drush repository
+#   git:
+#     repo: https://github.com/drush-ops/drush.git
+#     version: "12.4.0"
+#     dest: /opt/drush
+
+# - name: install Drush
+#   composer:
+#     command: require
+#     arguments: drush/drush
+#     working_dir: /opt/drush
+#   environment:
+#     COMPOSER_NO_INTERACTION: "1"   
+#     COMPOSER_ALLOW_SUPERUSER: "1"
+
+# - name: install Drush dependencies with Composer
+#   composer:
+#     command: install
+#     working_dir: "/opt/drush"
+#   environment:
+#     COMPOSER_NO_INTERACTION: "1"   
+#     COMPOSER_ALLOW_SUPERUSER: "1"
+
+# - name: create the Drush executable link
+#   file:
+#     src: /opt/drush/drush
+#     dest: /usr/local/bin/drush
+#     state: link
+
+- name: install mysql client
+  package: name=default-mysql-client state=present
+
+- name: create the Drupal install directory
+  file:
+    path: "{{ drupal_site_path }}"
+    state: directory
+
+- name: clone Drupal repository
+  git:
+    repo: http://git.drupal.org/project/drupal.git
+    version: "{{ drupal_version }}"
+    dest: "{{ drupal_site_path }}"
+    force: true
+
+- name: install Drush
+  composer:
+    command: require
+    arguments: drush/drush
+    working_dir: "{{ drupal_site_path }}"
+  environment:
+    COMPOSER_NO_INTERACTION: "1"   
+    COMPOSER_ALLOW_SUPERUSER: "1"
+
+- name: create the Drush executable link
+  file:
+    src: "{{ drupal_site_path }}/vendor/drush/drush/drush"
+    dest: /usr/local/bin/drush
+    state: link
+
+- name: install Drupal dependencies with Composer
+  composer:
+    command: install
+    working_dir: "{{ drupal_site_path }}"
+  environment:
+    COMPOSER_NO_INTERACTION: "1"   
+    COMPOSER_ALLOW_SUPERUSER: "1"
+
+# - name: install Drupal dependencies with Composer
+#   shell: composer install
+#   args:
+#     chdir: "{{ drupal_site_path }}"
+#     creates: "{{ drupal_site_path }}/vendor/autoload.php"
+
+
+- name: install Drupal
+  shell: drush si demo_umami -y --site-name="{{ drupal_site_name }}" --account-name={{ drupal_admin_username }} --account-pass="{{ drupal_admin_pass }}" --db-url=mysql://{{ drupal_db_user }}:{{ drupal_db_pass }}@{{ hostvars['db-server']['ansible_ec2_public_ipv4'] }}/{{ drupal_db_name }}
+  args:
+    chdir: "{{ drupal_site_path }}"
+
+- name: set proper ownership
+  file:
+    path: "{{ drupal_site_path }}"
+    owner: www-data
+    group: www-data
+    recurse: yes
+
+- name: set permissions on the settings file
+  file:
+    path: "{{ drupal_site_path }}/sites/default/settings.php"
+    mode: 0744
+
+- name: set permissions on files direcotry
+  file:
+    path: "{{ drupal_site_path }}/sites/default/files"
+    mode: 0777
+    state: directory
+    recurse: yes

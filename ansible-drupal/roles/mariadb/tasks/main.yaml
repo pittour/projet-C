@@ -1,0 +1,60 @@
+--- 
+- name: Installing MariaDB Server
+  package:
+    name: mariadb-server
+    state: latest
+    update_cache: true
+  become: true
+
+- name: install latest mariadb
+  package: name={{ item }} state=present
+  with_items:
+    - gcc
+    - python3-dev
+  become: true
+
+- name: install python package
+  become: true
+  package:
+    name: python3-mysqldb
+    state: latest
+
+- name: configure mariadb to bind to all addresses
+  lineinfile:
+    path: /etc/mysql/my.cnf
+    regexp: ^bind-address
+    line: bind-address = 0.0.0.0
+    state: present
+    backup: yes
+  become: true
+  notify:
+    - restart mariadb
+
+- name: update mysql root password for all root accounts
+  mysql_user: name=root host={{ item }} password={{ mysql_root_pass }}
+  with_items:
+   - 127.0.0.1
+   - ::1
+   - localhost
+  become: true
+
+- name: copy .my.cnf file with root password credentials
+  template:
+    src: my.cnf
+    dest: ~/.my.cnf
+    mode: 0600
+  become: true
+
+- name: service
+  service: name=mariadb state=started enabled=yes
+
+- meta: flush_handlers
+
+- name: create a new database for Drupal
+  mysql_db: name={{ drupal_db_name }} state=present
+  become: true
+
+- name: create a new database user for Drupal
+  become: true
+  mysql_user: name={{ drupal_db_user }}  password={{ drupal_db_pass }}
+                priv="{{ drupal_db_name }}.*:ALL" state=present host={{ hostvars['web-server']['ansible_ec2_public_ipv4'] }}

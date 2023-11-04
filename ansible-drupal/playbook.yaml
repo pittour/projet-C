@@ -1,0 +1,22 @@
+---
+- hosts: all
+  gather_facts: true
+  tasks:
+  - name: update and upgrade system packages
+    apt:
+      upgrade: yes
+      update_cache: yes
+    become: true
+
+  - amazon.aws.ec2_metadata_facts:
+
+- hosts: db-server
+  roles:
+    - mariadb
+
+- hosts: web-server
+  become: true
+  roles:
+    - php
+    - drupal
+    - nginx

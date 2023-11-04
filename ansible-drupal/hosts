@@ -1,0 +1,5 @@
+web-server ansible_ssh_host=34.243.226.18 ansible_ssh_user=admin
+db-server ansible_ssh_host=54.220.222.177 ansible_ssh_user=admin
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
