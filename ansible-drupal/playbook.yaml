@@ -7,17 +7,79 @@
       upgrade: yes
       update_cache: yes
     become: true
+  - name: install rsync
+    apt:
+      pkg:
+        - rsync
+      state: latest
+    become: true
+
+  # - name: Créer le répertoire de destination s'il n'existe pas
+  #   file:
+  #     path: /.ssh
+  #     state: directory
+  #     owner: admin
+  #   become: yes
+
+  - name: Copy ssh key
+    copy:
+      src: /home/ec2-user/.ssh/kev-key.pem
+      dest: /home/admin/kev-key.pem
+      mode: 0400
+      owner: admin
+    become_user: admin
 
 # Gather EC2 facts
   - amazon.aws.ec2_metadata_facts:
 
-- hosts: db-server
+
+- hosts: web-server1
+  tasks:
+  - name: Create an empty file
+    file:
+      path: /home/admin/test8.txt
+      state: touch
+
+  # - name: copy files to replicas
+  #   ansible.posix.synchronize:
+  #     src: /home/admin/test5.txt
+  #     dest: /home/admin/
+  #     # recursive: true
+  #     perms: true
+  #     # private_key: /home/admin/kev-key.pem
+  #     rsync_opts:
+  #       - "-e 'ssh -p 22 -o StrictHostKeyChecking=no -i /home/admin/kev-key.pem'"
+  #   delegate_to: web-server1
+  # - name: copy rep 
+  #   shell: | 
+  #     rsync -a --rsync-path="sudo mkdir -p /var/www && sudo rsync" -e "ssh -p 22 -o StrictHostKeyChecking=no -i /home/admin/kev-key.pem" /var/www/drupal admin@{{ hostvars['web-server2']['ansible_ec2_local_ipv4'] }}:/var/www/
+  #   become: true
+    # ignore_errors: true
+    # - name: Créer le répertoire de destination s'il n'existe pas
+    # file:
+    #   path: /var/www/drupal
+    #   state: directory
+    # become: yes
+    # - name: copy replicas
+    #   copy:
+    #     src: "{{ drupal_site_path }}"
+    #     dest: "{{ drupal_site_path }}"
+    #     remote_src: true
+    #     directory_mode: true
+    #   delegate_to: web-server1
+    #   become: true
+
+- hosts: database
   roles:
     - mariadb
 
-- hosts: web-server
+- hosts: web_server
   become: true
   roles:
     - php
-    - drupal
     - nginx
+
+- hosts: web-server1
+  become: true
+  roles:
+    - drupal

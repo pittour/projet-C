@@ -89,9 +89,13 @@
 
 
 - name: install Drupal
-  shell: drush si demo_umami -y --site-name="{{ drupal_site_name }}" --account-name={{ drupal_admin_username }} --account-pass="{{ drupal_admin_pass }}" --db-url=mysql://{{ drupal_db_user }}:{{ drupal_db_pass }}@{{ hostvars['db-server']['ansible_ec2_public_ipv4'] }}/{{ drupal_db_name }}
+  shell: drush si demo_umami -y --site-name="{{ drupal_site_name }}" --account-name={{ drupal_admin_username }} --account-pass="{{ drupal_admin_pass }}" --db-url=mysql://{{ drupal_db_user }}:{{ drupal_db_pass }}@{{ hostvars['db-server']['ansible_ec2_local_ipv4'] }}/{{ drupal_db_name }}
   args:
     chdir: "{{ drupal_site_path }}"
+
+- name: rebuild drush cache
+  shell: drush cr
+
 
 - name: set proper ownership
   file:
@@ -111,3 +115,8 @@
     mode: 0777
     state: directory
     recurse: yes
+
+- name: copy rep 
+  shell: | 
+    rsync -a --rsync-path="sudo mkdir -p /var/www && sudo rsync" -e "ssh -p 22 -o StrictHostKeyChecking=no -i /home/admin/kev-key.pem" /var/www/drupal admin@{{ hostvars['web-server2']['ansible_ec2_local_ipv4'] }}:/var/www/
+  become: true
