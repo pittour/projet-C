@@ -1,17 +1,17 @@
 resource "aws_lb" "lb" {
-  name               = "drupal-lb-${var.user}"
+  name               = "${var.site}-lb-${var.user}"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb-sg.id]
   subnets            = [aws_subnet.pub1.id, aws_subnet.pub2.id]
   tags = {
-    Environment = "drupal-lb-${var.user}"
+    Environment = "${var.site}-lb-${var.user}"
   }
 }
 
 resource "aws_lb_target_group" "my-tg" {
   target_type = "instance"
-  name     = "drupal-tg-${var.user}"
+  name     = "${var.site}-tg-${var.user}"
   port     = 80
   protocol = "HTTP"
   vpc_id   = data.aws_vpc.vpc.id

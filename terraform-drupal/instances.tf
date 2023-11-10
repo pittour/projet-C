@@ -5,7 +5,7 @@ resource "aws_instance" "webserver-1" {
   subnet_id = aws_subnet.priv1.id
   vpc_security_group_ids = [aws_security_group.drupal-sg.id]
   tags = {
-    Name = "drupal1-${var.user}"
+    Name = "${var.site}-1-${var.user}"
   }
   volume_tags = {
     owner = "kbillerach@thenuumfactory.fr"
@@ -21,7 +21,7 @@ resource "aws_instance" "webserver-2" {
   subnet_id = aws_subnet.priv2.id
   vpc_security_group_ids = [aws_security_group.drupal-sg.id]
   tags = {
-    Name = "drupal2-${var.user}"
+    Name = "${var.site}-2-${var.user}"
   }
   volume_tags = {
     owner = "kbillerach@thenuumfactory.fr"
@@ -37,7 +37,7 @@ resource "aws_instance" "db" {
   subnet_id = aws_subnet.priv3.id
   vpc_security_group_ids = [aws_security_group.db-sg.id]
   tags = {
-    Name = "drupal-db-${var.user}"
+    Name = "${var.site}-db-${var.user}"
   }
 
   volume_tags = {

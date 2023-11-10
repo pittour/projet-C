@@ -96,6 +96,11 @@
 - name: rebuild drush cache
   shell: drush cr
 
+- name: install drupal modules
+  shell: drush pm:install -y jsonapi basic_auth
+
+- name: change jsonapi settings
+  shell: drush config:delete jsonapi.settings read_only
 
 - name: set proper ownership
   file:
@@ -116,7 +121,7 @@
     state: directory
     recurse: yes
 
-- name: copy rep 
+- name: copy drupal to server 2
   shell: | 
     rsync -a --rsync-path="sudo mkdir -p /var/www && sudo rsync" -e "ssh -p 22 -o StrictHostKeyChecking=no -i /home/admin/kev-key.pem" /var/www/drupal admin@{{ hostvars['web-server2']['ansible_ec2_local_ipv4'] }}:/var/www/
   become: true

@@ -1,1 +1,2 @@
 user = "kebi"
+site = "drupal"

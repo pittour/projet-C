@@ -1,0 +1,18 @@
+---
+version: '3'
+services:
+  microservice:
+    image: microservice
+    ports:
+      - "80:80"
+      - "443:443"
+      - "9200:9200"
+    restart: always
+    networks:
+      - projetB
+    tmpfs:
+      - /tmp
+
+networks:
+  projetB:
+    external: true
