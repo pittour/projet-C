@@ -2,7 +2,6 @@ resource "aws_eks_cluster" "cluster" {
   name = "${var.site}-${var.user}-cls"
   role_arn = data.aws_iam_role.eks-role.arn
 
-
   vpc_config {
     subnet_ids = [
       aws_subnet.priv1.id,
@@ -45,57 +44,57 @@ resource "aws_eks_node_group" "nodes" {
 #   url = aws_eks_cluster.cluster.identity[0].oidc[0].issuer
 # }
 
-resource "kubernetes_service_account" "service-account" {
-  metadata {
-    name      = "aws-load-balancer-controller"
-    namespace = "kube-system"
-    labels = {
-    "app.kubernetes.io/name"      = "aws-load-balancer-controller"
-    "app.kubernetes.io/component" = "controller"
-    }
-    annotations = {
-    "eks.amazonaws.com/role-arn" = "arn:aws:iam::019050461780:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing"
-    "eks.amazonaws.com/sts-regional-endpoints" = "true"
-    }
-  }
-}
+# resource "kubernetes_service_account" "service-account" {
+#   metadata {
+#     name      = "aws-load-balancer-controller"
+#     namespace = "kube-system"
+#     labels = {
+#     "app.kubernetes.io/name"      = "aws-load-balancer-controller"
+#     "app.kubernetes.io/component" = "controller"
+#     }
+#     annotations = {
+#     "eks.amazonaws.com/role-arn" = "arn:aws:iam::019050461780:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing"
+#     "eks.amazonaws.com/sts-regional-endpoints" = "true"
+#     }
+#   }
+# }
 
-resource "helm_release" "lb" {
-  name       = "aws-load-balancer-controller"
-  repository = "https://aws.github.io/eks-charts"
-  chart      = "aws-load-balancer-controller"
-  namespace  = "kube-system"
-  depends_on = [
-    kubernetes_service_account.service-account
-  ]
+# resource "helm_release" "lb" {
+#   name       = "aws-load-balancer-controller"
+#   repository = "https://aws.github.io/eks-charts"
+#   chart      = "aws-load-balancer-controller"
+#   namespace  = "kube-system"
+#   depends_on = [
+#     kubernetes_service_account.service-account
+#   ]
 
-  set {
-    name  = "region"
-    value = "eu-west-1"
-  }
+#   set {
+#     name  = "region"
+#     value = "eu-west-1"
+#   }
 
-  set {
-    name  = "vpcId"
-    value = data.aws_vpc.vpc.id
-  }
+#   set {
+#     name  = "vpcId"
+#     value = data.aws_vpc.vpc.id
+#   }
 
-  set {
-    name  = "image.repository"
-    value = "602401143452.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-load-balancer-controller"
-  }
+#   set {
+#     name  = "image.repository"
+#     value = "602401143452.dkr.ecr.eu-west-1.amazonaws.com/amazon/aws-load-balancer-controller"
+#   }
 
-  set {
-    name  = "serviceAccount.create"
-    value = "false"
-  }
+#   set {
+#     name  = "serviceAccount.create"
+#     value = "false"
+#   }
 
-  set {
-    name  = "serviceAccount.name"
-    value = "aws-load-balancer-controller"
-  }
+#   set {
+#     name  = "serviceAccount.name"
+#     value = "aws-load-balancer-controller"
+#   }
 
-  set {
-    name  = "clusterName"
-    value = aws_eks_cluster.cluster.name
-  }
-}
+#   set {
+#     name  = "clusterName"
+#     value = aws_eks_cluster.cluster.name
+#   }
+# }
