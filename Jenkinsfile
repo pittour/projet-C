@@ -23,8 +23,8 @@ pipeline {
 
         stage('Creating environment variables') {
             steps {
-                sh('cp $DRUPAL_VARS ansible-drupal/group_vars/vars.yaml')
-                sh('cp $MS_ENV python-ms/.env')
+                sh('cp -f $DRUPAL_VARS ansible-drupal/group_vars/vars.yaml')
+                sh('cp -f $MS_ENV python-ms/.env')
                 echo "Environement variables created"
             }
         }
