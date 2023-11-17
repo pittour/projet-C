@@ -23,7 +23,7 @@
 
   - name: Copy ssh key
     copy:
-      src: /home/ec2-user/.ssh/kev-key.pem
+      src: /home/jenkins/.ssh/kev-key-its.pem
       dest: /home/admin/kev-key.pem
       mode: 0400
       owner: admin
