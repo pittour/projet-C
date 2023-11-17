@@ -2,8 +2,11 @@ import os
 from decouple import config
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
-# SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:aze123@localhost:3308/drupaldb'
-SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{config('DATABASE_USER')}:{config('DATABASE_USER_PASS')}@{config('DATABASE_HOST')}/{config('DATABASE_NAME')}"
+SQLALCHEMY_DATABASE_URI = (
+    "mysql+pymysql://"
+    f"{config('DATABASE_USER')}:{config('DATABASE_USER_PASS')}@"
+    f"{config('DATABASE_HOST')}/{config('DATABASE_NAME')}"
+)
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 DRUPAL_API_USER = config('DRUPAL_API_USER')
