@@ -20,6 +20,10 @@ data "aws_security_group" "jenkins-sg" {
   name = "kebi-jenkins-sg"
 }
 
+data "aws_security_group" "agent-sg" {
+  name = "kebi-agent-sg"
+}
+
 data "aws_route53_zone" "zone" {
   name = "kevin-billerach.me"
 }

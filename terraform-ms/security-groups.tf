@@ -40,7 +40,7 @@ resource "aws_security_group" "lb-sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    security_groups = [data.aws_security_group.jenkins-sg.id]
+    security_groups = [data.aws_security_group.jenkins-sg.id, data.aws_security_group.agent-sg.id]
   }
   egress {
     from_port   = 0
