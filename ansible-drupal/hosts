@@ -1,8 +1,0 @@
-[web_server]
-web-server1 ansible_ssh_host=10.0.5.220 ansible_ssh_user=admin
-web-server2 ansible_ssh_host=10.0.6.65 ansible_ssh_user=admin
-[database]
-db-server ansible_ssh_host=10.0.7.246 ansible_ssh_user=admin
-
-[all:vars]
-ansible_python_interpreter=/usr/bin/python3

@@ -27,7 +27,7 @@ resource "aws_lb_target_group" "my-tg" {
 }
 
 resource "aws_lb_target_group_attachment" "instance-atc1" {
-  count = 2
+  count = length(data.aws_instances.nodes.ids)
   target_group_arn = aws_lb_target_group.my-tg.arn
   target_id = data.aws_instances.nodes.ids[count.index]
 

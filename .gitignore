@@ -5,3 +5,4 @@ python-ms/myenv/
 __pycache__/
 python-ms/app.db
 monitoring/alertmanager/alertmanager.yml
+vars.yaml
