@@ -1,0 +1,22 @@
+---
+# mariadb role variables
+
+mysql_root_pass: 
+drupal_db_user: 
+drupal_db_name: drupal-data
+drupal_db_pass: 
+
+# Drupal Variables
+
+drupal_version: 10.0.11
+drupal_site_path: "/var/www/drupal"
+drupal_site_name: "My Drupal Site"
+drupal_admin_username: 
+drupal_admin_pass: 
+
+# Let's Encrypt Settings
+
+# Set it to false if domain is not configured.
+letsencrypt_generate: false 
+letsencrypt_domain: mydrupal.example.com
+letsencrypt_email: me@example.com
