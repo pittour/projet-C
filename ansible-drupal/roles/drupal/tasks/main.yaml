@@ -51,6 +51,12 @@
     path: "{{ drupal_site_path }}"
     state: directory
 
+- name: Add safe.directory setting to global git configuration
+  git_config:
+    name: "safe.directory"
+    value: "*"
+    scope: global
+
 - name: clone Drupal repository
   git:
     repo: http://git.drupal.org/project/drupal.git

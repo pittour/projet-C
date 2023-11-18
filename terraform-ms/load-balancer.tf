@@ -26,12 +26,17 @@ resource "aws_lb_target_group" "my-tg" {
   vpc_id   = data.aws_vpc.vpc.id
 }
 
-resource "aws_lb_target_group_attachment" "instance-atc1" {
-  count = length(data.aws_instances.nodes.ids)
-  target_group_arn = aws_lb_target_group.my-tg.arn
-  target_id = data.aws_instances.nodes.ids[count.index]
+# resource "aws_lb_target_group_attachment" "instance-atc1" {
+#   count = length(data.aws_instances.nodes.ids) ? length(data.aws_instances.nodes.ids) : 0
+#   target_group_arn = aws_lb_target_group.my-tg.arn
+#   target_id = data.aws_instances.nodes.ids[count.index]
 
-  depends_on = [ data.aws_instances.nodes ]
+#   depends_on = [ data.aws_instances.nodes ]
+# }
+
+resource "aws_autoscaling_attachment" "atc" {
+  autoscaling_group_name = aws_eks_node_group.nodes.resources[0].autoscaling_groups[0].name
+  lb_target_group_arn = aws_lb_target_group.my-tg.arn
 }
 
 resource "aws_lb_listener" "https" {
