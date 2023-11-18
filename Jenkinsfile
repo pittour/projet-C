@@ -51,6 +51,18 @@ pipeline {
             }
         }
 
+        stage('Microservice architecture creation') {
+            steps {
+                //  Lancement drupal.
+                sh '''
+                    cd terraform-ms/
+                    terraform init
+                    terraform apply --auto-approve
+                '''
+                echo "Microservice aws architecture is ready"
+            }
+        }
+
         stage('Application tests') {
             steps {
                 timeout(10) {
@@ -94,18 +106,6 @@ pipeline {
                     docker push 019050461780.dkr.ecr.eu-west-1.amazonaws.com/kebi-ecr:latest
                 '''
                 echo "Image is ready to use"
-            }
-        }
-
-        stage('Microservice architecture creation') {
-            steps {
-                //  Lancement drupal.
-                sh '''
-                    cd terraform-ms/
-                    terraform init
-                    terraform apply --auto-approve
-                '''
-                echo "Microservice aws architecture is ready"
             }
         }
 
