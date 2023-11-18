@@ -1,11 +1,11 @@
-data "aws_instances" "nodes" {
-  filter {
-    name = "tag:eks:nodegroup-name"
-    values = ["ms-kebi-nodes"]
-  }
+# data "aws_instances" "nodes" {
+#   filter {
+#     name = "tag:eks:nodegroup-name"
+#     values = ["ms-kebi-nodes"]
+#   }
 
-  depends_on = [ aws_eks_node_group.nodes ]
-}
+#   depends_on = [ aws_eks_node_group.nodes ]
+# }
 
 resource "aws_lb" "lb" {
   name               = "${var.site}-lb-${var.user}"
