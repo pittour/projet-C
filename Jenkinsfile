@@ -170,11 +170,11 @@ pipeline {
                 reportTitles: 'Code scan'
             ]
 
-            withCredentials([gitUsernamePassword(credentialsId: 'github_access', gitToolName: 'Default')]) {
-                sh '''
-                    git push --force origin HEAD:last-stable
-                '''
-            }
+            // withCredentials([gitUsernamePassword(credentialsId: 'github_access', gitToolName: 'Default')]) {
+            //     sh '''
+            //         git push --force origin HEAD:last-stable
+            //     '''
+            // }
         }
 
         always {
