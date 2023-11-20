@@ -17,6 +17,8 @@ resource "aws_db_instance" "my-db" {
   instance_class       = "db.t2.micro"
   username             = "admin"
   password             = "azerty12345"
+  backup_retention_period = 7
+  multi_az = true
   skip_final_snapshot  = true
   db_subnet_group_name = aws_db_subnet_group.sub-group.name
   identifier = "${var.user}-${var.site}-db"
