@@ -12,7 +12,6 @@ pipeline {
 
         stage('Scanning the microservice code') {
             steps {
-                // Lancement de l'app
                 sh '''
                     cd python-ms/
                     trivy fs --scanners config --format template --template "@/home/jenkins/html.tpl" -o /home/jenkins/code-scan.html .
@@ -129,28 +128,6 @@ pipeline {
                 echo "Microservice deployed sucessfully"
             }
         }
-
-        // stage('Scanning the microservice container') {
-        //     steps {
-        //         // Lancement de l'app
-        //         sh '''
-        //             cd /home/jenkins
-        //             trivy image --timeout 10m --format template --template "@html.tpl" -o image-scan.html microservice
-        //         '''
-        //         echo "Microservice container scanned sucessfully"
-        //     }
-        // }
-
-        // stage('Deployment') {
-        //     steps {
-        //         // Lancement de l'app
-        //         sh '''
-        //             cd python/
-        //             docker compose up -d
-        //         '''
-        //         echo "Microservice deployed sucessfully"
-        //     }
-        // }
 
     }
     post {
