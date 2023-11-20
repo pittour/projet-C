@@ -82,34 +82,37 @@ pipeline {
                         }
                     }
                 }
-                try {
-                    sh '''
-                        cd python-ms/
-                        python3 -m venv myenv
-                        . ./myenv/bin/activate
-                        pip3 install -r requirements.txt
-                        flake8 --ignore=E402 --exclude=myenv .
-                        python3 test_add_article.py
-                        python3 test_delet_article.py
-                    '''
+                script {
+                    try {
+                        sh '''
+                            cd python-ms/
+                            python3 -m venv myenv
+                            . ./myenv/bin/activate
+                            pip3 install -r requirements.txt
+                            flake8 --ignore=E402 --exclude=myenv .
+                            python3 test_add_article.py
+                            python3 test_delet_article.py
+                        '''
 
-                    echo "Tests passed successfully"
-                    echo "Now creating the microservice image..."
+                        echo "Tests passed successfully"
+                        echo "Now creating the microservice image..."
 
-                    sh '''
-                        cd python-ms/
-                        aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 019050461780.dkr.ecr.eu-west-1.amazonaws.com
-                        docker build -t kebi-ecr .
-                        docker tag kebi-ecr:latest 019050461780.dkr.ecr.eu-west-1.amazonaws.com/kebi-ecr:latest
-                        docker push 019050461780.dkr.ecr.eu-west-1.amazonaws.com/kebi-ecr:latest
-                    '''
-                    echo "Image is ready to use"
+                        sh '''
+                            cd python-ms/
+                            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 019050461780.dkr.ecr.eu-west-1.amazonaws.com
+                            docker build -t kebi-ecr .
+                            docker tag kebi-ecr:latest 019050461780.dkr.ecr.eu-west-1.amazonaws.com/kebi-ecr:latest
+                            docker push 019050461780.dkr.ecr.eu-west-1.amazonaws.com/kebi-ecr:latest
+                        '''
+                        echo "Image is ready to use"
+                    }
+                    catch (exception) {
+                        currentBuild.result = 'UNSTABLE'
+                        echo "Tests failed. New image won't be created."
+                        echo "Last known is being deployed instead..."
+                    }
                 }
-                catch (exception) {
-                    currentBuild.result = 'UNSTABLE'
-                    echo "Tests failed. New image won't be created."
-                    echo "Last known is being deployed instead..."
-                }
+                
                 
 
             }
