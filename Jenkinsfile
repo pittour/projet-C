@@ -108,7 +108,7 @@ pipeline {
                     catch (exception) {
                         currentBuild.result = 'UNSTABLE'
                         echo "Tests failed. New image won't be created."
-                        echo "Last known is being deployed instead..."
+                        echo "Last known stable version is being deployed instead..."
                     }
                 }
                 
@@ -124,6 +124,16 @@ pipeline {
                 sh '''
                     cd kubernetes-ms/
                     kubectl apply -f .
+                '''
+                echo "Microservice deployed sucessfully"
+            }
+        }
+
+        stage('Monitoring deployment') {
+            steps {
+                sh '''
+                    kubectl create namespace prometheus
+                    helm upgrade -i prometheus prometheus-community/prometheus --namespace prometheus --set alertmanager.persistentVolume.enabled=false --set server.persistentVolume.enabled=false
                 '''
                 echo "Microservice deployed sucessfully"
             }
