@@ -130,6 +130,7 @@ pipeline {
                 sh '''
                     cd monitoring/
                     kubectl create namespace prometheus
+                    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
                     helm upgrade -i prometheus prometheus-community/prometheus --namespace prometheus -f custom-rules.yaml
                 '''
                 echo "Monitoring deployed sucessfully"
