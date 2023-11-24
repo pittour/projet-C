@@ -8,7 +8,7 @@ serverFiles:
     - name: 'nodes-resources'
       rules:
       - alert: NodeCpuUsageTooHigh
-        expr: sum by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) > 0.95
+        expr: sum by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) > 1.95
         for: 5m
         labels:
           severity: high
