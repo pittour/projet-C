@@ -130,8 +130,31 @@ pipeline {
                 sh '''
                     cd monitoring/
                     kubectl create namespace prometheus
+                    kubectl create namespace grafana
                     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-                    helm upgrade -i prometheus prometheus-community/prometheus --namespace prometheus -f custom-rules.yaml
+                    helm upgrade -i prometheus prometheus-community/prometheus --namespace prometheus -f prometheus.yaml
+                    helm repo add grafana https://grafana.github.io/helm-charts
+                    helm install grafana grafana/grafana -n grafana -f grafana.yaml -f grafana-secrets.yaml
+                    LB_DNS=$(kubectl get service grafana -n grafana -o json | jq -r '.status.loadBalancer.ingress[0].hostname')
+                    aws route53 change-resource-record-sets \
+                        --hosted-zone-id Z04407843NK6AZIR5YB6N \
+                        --change-batch '{
+                            "Changes": [
+                                {
+                                    "Action": "UPSERT",
+                                    "ResourceRecordSet": {
+                                        "Name": "grafana.kevin-billerach.me",
+                                        "Type": "CNAME",
+                                        "TTL": 300,
+                                        "ResourceRecords": [
+                                            {
+                                                "Value": "'"$LB_DNS"'"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }'
                 '''
                 echo "Monitoring deployed sucessfully"
             }
