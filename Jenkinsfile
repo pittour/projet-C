@@ -139,6 +139,7 @@ pipeline {
                     helm upgrade -i prometheus prometheus-community/prometheus --namespace prometheus -f prometheus.yaml
                     helm repo add grafana https://grafana.github.io/helm-charts
                     helm install grafana grafana/grafana -n grafana -f grafana.yaml -f grafana-secrets.yaml
+                    sleep 5
                     LB_DNS=$(kubectl get service grafana -n grafana -o json | jq -r '.status.loadBalancer.ingress[0].hostname')
                     aws route53 change-resource-record-sets \
                         --hosted-zone-id Z04407843NK6AZIR5YB6N \
@@ -171,6 +172,8 @@ pipeline {
             git branch: 'last-stable', credentialsId: 'github_access', url: 'https://github.com/pittour/projet-C.git'
             sh('cp -f $DRUPAL_VARS ansible-drupal/group_vars/all.yaml && chmod 644 ansible-drupal/group_vars/all.yaml')
             sh('cp -f $MS_ENV python-ms/.env && chmod 644 python-ms/.env')
+            sh('cp -f $MS_TFVARS terraform-ms/development.auto.tfvars && chmod 644 terraform-ms/development.auto.tfvars')
+            sh('cp -f $GF_SECRETS monitoring/grafana-secrets.yaml && chmod 644 monitoring/grafana-secrets.yaml')
             sh '''
                 cd terraform-drupal/
                 terraform init
