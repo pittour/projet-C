@@ -15,8 +15,8 @@ resource "aws_db_instance" "my-db" {
   engine               = "mariadb"
   engine_version       = "10.6.14"
   instance_class       = "db.t2.micro"
-  username             = "admin"
-  password             = "azerty12345"
+  username             = "${var.db_user}"
+  password             = "${var.db_pass}"
   backup_retention_period = 7
   multi_az = true
   skip_final_snapshot  = true

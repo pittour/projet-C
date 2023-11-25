@@ -6,6 +6,8 @@ pipeline {
     environment {
         DRUPAL_VARS = credentials('drupal-vars')
         MS_ENV = credentials('ms-env')
+        MS_TFVARS = credentials('tfvars')
+        GF_SECRETS = credentials('grafana-secrets')
     }
 
     stages {
@@ -24,6 +26,8 @@ pipeline {
             steps {
                 sh('cp -f $DRUPAL_VARS ansible-drupal/group_vars/all.yaml && chmod 644 ansible-drupal/group_vars/all.yaml')
                 sh('cp -f $MS_ENV python-ms/.env && chmod 644 python-ms/.env')
+                sh('cp -f $MS_TFVARS terraform-ms/development.auto.tfvars && chmod 644 terraform-ms/development.auto.tfvars')
+                sh('cp -f $GF_SECRETS monitoring/grafana-secrets.yaml && chmod 644 monitoring/grafana-secrets.yaml')
                 echo "Environement variables created"
             }
         }
