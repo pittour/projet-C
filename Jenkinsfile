@@ -24,10 +24,10 @@ pipeline {
 
         stage('Creating environment variables') {
             steps {
-                sh('cp -f $DRUPAL_VARS ansible-drupal/group_vars/all.yaml && chmod 644 ansible-drupal/group_vars/all.yaml')
-                sh('cp -f $MS_ENV python-ms/.env && chmod 644 python-ms/.env')
-                sh('cp -f $MS_TFVARS terraform-ms/development.auto.tfvars && chmod 644 terraform-ms/development.auto.tfvars')
-                sh('cp -f $GF_SECRETS monitoring/grafana-secrets.yaml && chmod 644 monitoring/grafana-secrets.yaml')
+                sh('cp -f $DRUPAL_VARS ansible-drupal/group_vars/all.yaml && chmod 400 ansible-drupal/group_vars/all.yaml')
+                sh('cp -f $MS_ENV python-ms/.env && chmod 400 python-ms/.env')
+                sh('cp -f $MS_TFVARS terraform-ms/development.auto.tfvars && chmod 400 terraform-ms/development.auto.tfvars')
+                sh('cp -f $GF_SECRETS monitoring/grafana-secrets.yaml && chmod 400 monitoring/grafana-secrets.yaml')
                 echo "Environement variables created"
             }
         }
@@ -170,10 +170,10 @@ pipeline {
         failure {
             cleanWs()
             git branch: 'last-stable', credentialsId: 'github_access', url: 'https://github.com/pittour/projet-C.git'
-            sh('cp -f $DRUPAL_VARS ansible-drupal/group_vars/all.yaml && chmod 644 ansible-drupal/group_vars/all.yaml')
-            sh('cp -f $MS_ENV python-ms/.env && chmod 644 python-ms/.env')
-            sh('cp -f $MS_TFVARS terraform-ms/development.auto.tfvars && chmod 644 terraform-ms/development.auto.tfvars')
-            sh('cp -f $GF_SECRETS monitoring/grafana-secrets.yaml && chmod 644 monitoring/grafana-secrets.yaml')
+            sh('cp -f $DRUPAL_VARS ansible-drupal/group_vars/all.yaml && chmod 400 ansible-drupal/group_vars/all.yaml')
+            sh('cp -f $MS_ENV python-ms/.env && chmod 400 python-ms/.env')
+            sh('cp -f $MS_TFVARS terraform-ms/development.auto.tfvars && chmod 400 terraform-ms/development.auto.tfvars')
+            sh('cp -f $GF_SECRETS monitoring/grafana-secrets.yaml && chmod 400 monitoring/grafana-secrets.yaml')
             sh '''
                 cd terraform-drupal/
                 terraform init
