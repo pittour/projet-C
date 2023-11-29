@@ -11,13 +11,9 @@ WORKDIR /drupal-brutal
 ENV PROMETHEUS_MULTIPROC_DIR /tmp
 ENV prometheus_multiproc_dir /tmp
 
-ENV DATABASE_HOST localhost:3306
-
 COPY . .
 
 RUN groupadd -r drupal && useradd -r -g drupal drupal
-
-# RUN pip3 install --no-cache-dir --upgrade pip setuptools
 
 RUN pip3 install -r requirements.txt
 
